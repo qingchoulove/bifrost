@@ -1,0 +1,36 @@
+{
+  "name": "webtty",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/react": "^16.9.41",
+    "@types/react-dom": "^16.9.8",
+    "crypto-js": "^4.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "webpack": "^4.43.0",
+    "xterm": "^4.7.0",
+    "xterm-addon-attach": "^0.6.0",
+    "xterm-addon-fit": "^0.4.0"
+  },
+  "scripts": {
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^3.1.47",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.6.0",
+    "eslint": "^7.3.1",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.2",
+    "eslint-plugin-react-hooks": "^4.0.4",
+    "html-webpack-plugin": "^4.3.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.6",
+    "webpack-cli": "^3.3.12"
+  }
+}

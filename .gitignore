@@ -1,0 +1,4 @@
+.idea
+release
+front/dist
+front/node_modules
