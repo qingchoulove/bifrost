@@ -6,7 +6,6 @@ import Base64 from "crypto-js/enc-base64";
 import Utf8 from "crypto-js/enc-utf8";
 
 const msgInput = '1';
-const msgPing = '2';
 const msgResizeTerminal = '3';
 
 interface Props {
@@ -31,12 +30,12 @@ export const XTermComponent = (props: Props) => {
         webSocket.onopen = () => {
             terminal.open(terminalContainer);
             fitAddon.fit();
+            terminal.write("welcome to bifrost🌈\r\n");
             terminal.focus();
         };
 
         webSocket.onclose = () => {
-            terminal.write('\r\n');
-            terminal.write('webTTY quit!');
+            terminal.write("\r\nwebTTY quit!");
         };
 
         webSocket.onerror = (event) => {
@@ -53,12 +52,10 @@ export const XTermComponent = (props: Props) => {
             webSocket.send(msgResizeTerminal +
                 Base64.stringify(
                     Utf8.parse(
-                        JSON.stringify(
-                            {
-                                columns: cols,
-                                rows: rows
-                            }
-                        )
+                        JSON.stringify({
+                            columns: cols,
+                            rows: rows
+                        })
                     )
                 )
             );

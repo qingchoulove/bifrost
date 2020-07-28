@@ -1,4 +1,5 @@
 .idea
 release
+bifrost
 front/dist
 front/node_modules
