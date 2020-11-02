@@ -6,6 +6,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
     mode: 'development',
     devtool: 'source-map',
+    stats: 'errors-only',
     entry: './src/index.tsx',
     output: {
         filename: 'app_[hash:6].js',

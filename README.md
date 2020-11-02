@@ -4,7 +4,7 @@
 ## 依赖
 - [pty](https://github.com/creack/pty)
 - [gin](https://github.com/gin-gonic/gin)
-- [websocket](github.com/gorilla/websocket)
+- [websocket](https://github.com/gorilla/websocket)
 - [xterm.js](https://github.com/xtermjs/xterm.js)
 
 ## 使用
