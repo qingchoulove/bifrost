@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"os"
 	"os/signal"
@@ -11,7 +12,14 @@ import (
 	"syscall"
 )
 
+var (
+	cliPwd  = flag.String("pwd", "password", "Input Basic Auth Password")
+	cliUser = flag.String("user", "user", "Input Basic Auth Username")
+	cliPort = flag.Int("port", 8080, "Input web server port")
+)
+
 func main() {
+	flag.Parse()
 	cancel, cancelFunc := context.WithCancel(context.Background())
 	// graceful shutdown
 	signals := make(chan os.Signal)
@@ -22,12 +30,16 @@ func main() {
 		cancelFunc()
 	}()
 	// run server
-	serve, err := server.NewServer(getCurrPath())
+	serve, err := server.NewServer(cancel,
+		server.OptionStaticPath(getCurrPath()),
+		server.OptionUserName(*cliUser),
+		server.OptionPassword(*cliPwd),
+		server.OptionPort(*cliPort))
 	if err != nil {
 		log.Println("NewServer Server:", err)
 		return
 	}
-	err = serve.Run(cancel)
+	err = serve.Run()
 	if err != nil {
 		log.Println("Server Stop:", err)
 	}

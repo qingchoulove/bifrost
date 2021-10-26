@@ -9,36 +9,49 @@ import (
 	"path"
 	"path/filepath"
 	"qingchoulove.github.com/bifrost/tty"
+	"strconv"
 )
 
 type Server struct {
+	ctx      context.Context
 	upgrader *websocket.Upgrader
 	static   string
+	username string
+	password string
+	port     int
 }
 
-func NewServer(startPath string) (*Server, error) {
-	return &Server{
+func NewServer(ctx context.Context, options ...Option) (*Server, error) {
+	s := &Server{
 		upgrader: &websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 			CheckOrigin: func(r *http.Request) bool {
 				return true
 			},
-		}, static: startPath,
-	}, nil
+		},
+		ctx: ctx,
+	}
+	for _, option := range options {
+		option(s)
+	}
+	return s, nil
 }
 
-func (server *Server) Run(ctx context.Context) error {
+func (server *Server) Run() error {
 	router := gin.New()
 	router.LoadHTMLFiles(filepath.Join(server.static, "front/dist/index.html"))
 	router.Static("/dist", path.Join(server.static, "front/dist"))
 
-	router.GET("/", func(c *gin.Context) {
+	basicAuth := gin.BasicAuth(gin.Accounts{
+		server.username: server.password,
+	})
+	router.GET("/", basicAuth, func(c *gin.Context) {
 		c.HTML(200, "index.html", nil)
 	})
-	router.GET("/ws", server.handleWebsocket(ctx))
+	router.GET("/ws", basicAuth, server.handleWebsocket(server.ctx))
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":" + strconv.Itoa(server.port),
 		Handler: router,
 	}
 	errs := make(chan error)
@@ -46,12 +59,12 @@ func (server *Server) Run(ctx context.Context) error {
 		errs <- srv.ListenAndServe()
 	}()
 	select {
-	case <-ctx.Done():
-		err := srv.Shutdown(ctx)
+	case <-server.ctx.Done():
+		err := srv.Shutdown(server.ctx)
 		if err != nil {
 			log.Println("Server Shutdown:", err)
 		}
-		return ctx.Err()
+		return server.ctx.Err()
 	case err := <-errs:
 		return err
 	}
